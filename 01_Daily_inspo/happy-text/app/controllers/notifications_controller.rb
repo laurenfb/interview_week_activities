@@ -1,17 +1,23 @@
 class NotificationsController < ApplicationController
+skip_before_filter :verify_authenticity_token
 
-  def send_message(phone_number)
-    twilio_number = ENV['TWILIO_NUMBER']
-   client = Twilio::REST::Client.new(ENV['TWILIO_ACCOUNT_SID'], ENV['TWILIO_AUTH_TOKEN'])
+  def reply
+    message_body = params["Body"]
+    from_number = params["From"]
+    boot_twilio
+    sms = @client.messages.create(
+      from: ENV['TWILIO_NUMBER'],
+      to: from_number,
+      body: "Hello there, thanks for texting me. Your number is #{from_number}."
+    )
+
   end
 
-  def receive()
-    content_type 'text/xml'
+  private
 
-    response = Twilio::TwiML::Response.new do |r|
-      r.Message "Hey thanks for messaging me!"
-    end
-
-    response.to_xml
+  def boot_twilio
+    account_sid = ENV['TWILIO_ACCOUNT_SID']
+    auth_token = ENV['TWILIO_AUTH_TOKEN']
+    @client = Twilio::REST::Client.new(account_sid, auth_token)
   end
 end

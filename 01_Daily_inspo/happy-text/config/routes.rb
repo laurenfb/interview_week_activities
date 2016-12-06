@@ -1,9 +1,10 @@
 Rails.application.routes.draw do
 
+post 'reply' => 'notifications#reply'
 
-  resource :messages do
-    collection do
-      post 'reply'
-    end
-  end
-end 
+  # resource :notifications do
+  # #   collection do
+  #     post 'reply'
+  # #   end
+  # end
+end
